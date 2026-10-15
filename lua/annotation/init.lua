@@ -77,17 +77,6 @@ local function annotate_header (entry_header)
     vim.api.nvim_win_set_cursor(win, { lnum, 0 })
 end
 
----@param buf integer
----@return string | nil
-local function buffer_filename (buf)
-    local filename = vim.api.nvim_buf_get_name(buf)
-    if filename == "" or vim.bo[buf].buftype ~= "" then
-        vim.notify("this buffer is not related to file", vim.log.levels.ERROR)
-        return nil
-    end
-    return filename
-end
-
 ---@param filename string
 ---@param line integer
 function M.annotate_line (filename, line)
@@ -111,9 +100,10 @@ function M.annotate_range (filename, line_from, col_from, line_to, col_to)
 end
 
 function M.annotate ()
-    local filename = buffer_filename(vim.api.nvim_get_current_buf())
-    if filename == nil then
-        return
+    local filename = vim.fn.expand("%")
+    if filename == "" or vim.bo[0].buftype ~= "" then
+        vim.notify("this buffer is not related to file", vim.log.levels.ERROR)
+        return nil
     end
 
     local mode = vim.fn.mode()
