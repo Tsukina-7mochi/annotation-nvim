@@ -51,11 +51,11 @@ function M.get_buffer ()
     vim.bo[M.buf].buftype = "acwrite"
     vim.bo[M.buf].bufhidden = "hide"
     vim.bo[M.buf].swapfile = false
-    vim.bo[M.buf].filetype = "quick_note"
+    vim.bo[M.buf].filetype = "annotation"
     return M.buf
 end
 
-function M.open_note ()
+function M.open_annotation ()
     local filename = vim.api.nvim_buf_get_name(0)
     if filename == "" or vim.bo.buftype ~= "" then
         return vim.notify("this buffer is not related to file", vim.log.levels.ERROR)
@@ -67,7 +67,7 @@ function M.open_note ()
         relative = "cursor",
         row = 1,
         col = 0,
-        title = "Quick Note",
+        title = "Annotation",
         width = math.floor(vim.o.columns * 0.5),
         height = 10,
         style = "minimal",
@@ -101,14 +101,14 @@ function M.open_note ()
 end
 
 function M.setup ()
-    vim.api.nvim_create_user_command("Note", M.open_note, {})
-    vim.api.nvim_create_user_command("NoteEdit", function ()
+    vim.api.nvim_create_user_command("Annotate", M.open_annotation, {})
+    vim.api.nvim_create_user_command("AnnotationEdit", function ()
         vim.cmd(("b %d"):format(M.get_buffer()))
     end, {})
-    vim.api.nvim_create_user_command("NoteTabEdit", function ()
+    vim.api.nvim_create_user_command("AnnotationTabEdit", function ()
         vim.cmd(("tab sb %d"):format(M.get_buffer()))
     end, {})
-    vim.api.nvim_create_user_command("NoteDrop", function ()
+    vim.api.nvim_create_user_command("AnnotationDrop", function ()
         vim.api.nvim_buf_delete(M.buf, { force = true })
         M.buf = nil
     end, {})
